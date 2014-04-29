@@ -22,6 +22,8 @@ class GrafProcessor
    public static final String RESOURCE_HEADER = MASC_ROOT + "/resource-header.xml"
    public static final String OUTPUT_ROOT = MASC_ROOT + "-json"
    
+   PrintWriter index = new PrintWriter(new File(OUTPUT_ROOT, "masc3-json.index"))
+   
    Logger log = LoggerFactory.getLogger(GrafProcessor.class)
    
    private GrafParser parser
@@ -39,6 +41,7 @@ class GrafProcessor
             process(file, outDir)
          }
       }
+      index.close()
    }
 
    void process(File inputFile, File outputDir)
@@ -87,7 +90,10 @@ class GrafProcessor
       File outputFile = new File(outputDir.getPath() + relativePath)
       outputFile.getParentFile().mkdirs()
       PrintWriter out = new PrintWriter(outputFile)
-      out.print(container.toJson())
+      out.println(container.toJson())
+      out.close()
+      
+      index.println("${docHeader.getDocId()} ${outputFile.getPath()}")
    }
    
    static void main(String[] args) {
